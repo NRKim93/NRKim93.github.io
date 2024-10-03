@@ -8,7 +8,11 @@
 <body>
     <H1>Hello</H1>
     <p>Fetched Name from Database: </p>
-    <ul><input type="text" placeholder="asd" id="insert_val"><input type="button" value="return" id="insertTable" onclick="insertTbl()"></ul>
+    <ul>
+        <input type="text" placeholder="asd" id="insert_val">
+        <input type="button" value="return" id="insertTable" onclick="insertTbl()">
+        <input type="button" value="delete" id="deleteTable" onclick="deleteTbl()">
+    </ul>
     <ul id="nameList"></ul>
 
     <script>
@@ -29,8 +33,12 @@
                     // 받아온 데이터가 배열이므로, 이를 반복문으로 처리
                     data.forEach(name => {
                     const listItem = document.createElement('li');
+                    listItem.setAttribute('id','name_val_'+name);
                     listItem.innerText = name;  // 각 이름을 리스트 아이템으로 추가
+                    const chkBox = document.createElement('input');
+                    chkBox.type = 'checkbox';
                     nameList.appendChild(listItem);
+                    listItem.appendChild(chkBox);
                 });
             })
         .catch(error => console.error('Error:', error));
@@ -57,6 +65,36 @@
         })
         console.log(a);
     }
+
+    function deleteTbl() {
+        var checkedItem = document.querySelector('input[type="checkbox"]:checked');
+        if(checkedItem) {
+            var listItemId = checkedItem.parentElement.id;
+            console.log(listItemId);
+
+            fetch('/delete',{
+                method : 'POST',
+                headers: {
+                'Content-type' : 'application/json',
+            },
+            body: JSON.stringify({name: listItemId.replace('name_val_', '')})  // id에서 'name_' 제거 후 name으로 전달
+            })
+
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP error ' + response.status);
+                }
+                return response.text();
+            })
+            .then(data => {
+                fetchAllNames();
+            })
+            .catch (error => console.error('Error:', error));
+        } else {
+            alert('삭제 항목 선택 ㄱㄱ ')
+        }
+    }
+
     window.onload = fetchAllNames;
     </script>
 </body>

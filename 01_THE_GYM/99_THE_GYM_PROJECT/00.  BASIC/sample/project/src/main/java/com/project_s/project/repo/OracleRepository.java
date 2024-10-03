@@ -15,18 +15,18 @@ public class OracleRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // public List<String> getNameList() {
-    //     final String sql = "SELECT NAME FROM TEST_TABLE_001";
-    //     return jdbcTemplate.queryForList(sql, String.class);
-    // }
-
     public List<String> getAllNames() {
-        final String sql = "SELECT NAME FROM TEST_TABLE_001";
+        final String sql = "SELECT NAME FROM TEST_TABLE_001 WHERE DEL_FLG = 'N'";
         return jdbcTemplate.queryForList(sql, String.class);
     }
 
     public void insertDatas(String name) {
         final String sql = "INSERT INTO TEST_TABLE_001 (NAME) VALUES (?)";
+        jdbcTemplate.update(sql,name);
+    }
+
+    public void deletetDatas(String name) {
+        final String sql = "UPDATE TEST_TABLE_001 SET DEL_FLG = 'Y' WHERE NAME = ?";
         jdbcTemplate.update(sql,name);
     }
 }

@@ -26,4 +26,9 @@ public class SampleServiceImpl implements SampleService{
        public void insertDatas(String name) {
             oracleRepository.insertDatas(name);
        }
+
+       @Override
+       public void deletetDatas(String name) {
+            oracleRepository.deletetDatas(name);
+       }
 }

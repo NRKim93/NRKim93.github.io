@@ -41,4 +41,12 @@ public class SampleController {
         sampleService.insertDatas(name);
 
     }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public void deletetDatas(@RequestBody Map<String,String> payload) {
+        String name = payload.get("name");
+        sampleService.deletetDatas(name);
+    }
+    
 }

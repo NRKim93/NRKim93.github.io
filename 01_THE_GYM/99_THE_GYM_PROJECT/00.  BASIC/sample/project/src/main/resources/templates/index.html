@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+</head>
+<body>
+    <H1>Hello</H1>
+    <p>Fetched Name from Database: </p>
+    <ul><input type="text" placeholder="asd" id="insert_val"><input type="button" value="return" id="insertTable" onclick="insertTbl()"></ul>
+    <ul id="nameList"></ul>
+
+    <script>
+        // fetch('/name')
+        //     .then(response => response.text())
+        //     .then(data => {
+        //         document.getElementById('name').innerText = data;
+        //     }) 
+        //     .catch(error => console.error('Error : ',error));
+
+        function fetchAllNames() {
+            fetch('/name')
+                .then(response => response.json())  // 데이터를 JSON 형식으로 수신
+                .then(data => {
+                    const nameList = document.getElementById('nameList');
+                    nameList.innerHTML = '';  // 기존 리스트 초기화
+
+                    // 받아온 데이터가 배열이므로, 이를 반복문으로 처리
+                    data.forEach(name => {
+                    const listItem = document.createElement('li');
+                    listItem.innerText = name;  // 각 이름을 리스트 아이템으로 추가
+                    nameList.appendChild(listItem);
+                });
+            })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function insertTbl() {
+        var a = document.getElementById('insert_val').value;
+        fetch('/insert', {
+            method : 'POST',
+            headers: {
+                'Content-type' : 'application/json',
+            },
+            body: JSON.stringify({name:a})
+        })
+
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('HTTP error ' + response.status);
+            }
+            return response.text();
+        })
+        .then(data => {
+            fetchAllNames();
+        })
+        console.log(a);
+    }
+    window.onload = fetchAllNames;
+    </script>
+</body>
+</html>
